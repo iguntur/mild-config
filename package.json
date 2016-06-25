@@ -1,0 +1,34 @@
+{
+  "name": "mild-config",
+  "version": "0.0.0",
+  "description": "Mild config",
+  "license": "MIT",
+  "repository": "iguntur/mild-config",
+  "author": {
+    "name": "Guntur Poetra",
+    "email": "poetra.guntur@gmail.com",
+    "url": "http://guntur.starmediateknik.com"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "config",
+    "gulp",
+    "mild"
+  ],
+  "dependencies": {
+    "dot-prop": "^4.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "gulp": "^3.9.1",
+    "xo": "^0.17.0"
+  }
+}
