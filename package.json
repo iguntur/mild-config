@@ -1,7 +1,7 @@
 {
   "name": "mild-config",
-  "version": "0.0.0",
-  "description": "Mild config",
+  "version": "0.1.0",
+  "description": "Mild config for gulp",
   "license": "MIT",
   "repository": "iguntur/mild-config",
   "author": {
