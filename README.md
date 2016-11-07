@@ -2,6 +2,8 @@
 
 > Mild config for gulp
 
+Make easy and simple to setup __[gulp](https://www.npmjs.com/package/gulp)__ config tasks.
+
 
 ## Install
 
@@ -28,17 +30,26 @@ gulp.task('script', () => {
 });
 ```
 
+
 ## API
+
+> See [dot-prop](https://www.npmjs.com/package/dot-prop#api) API
+
+### config.set(key, val)
 
 ### config.get(path)
 
-Returns a value of path
-
 - #### path
 
-    Type: `string` <br>
+    Type: `string`
 
-    Get a config item using a dot-notation.
+- #### key
+
+    Type: `string`, `object`
+
+- #### val
+
+    Type: `any`
 
 
 ## Related
