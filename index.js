@@ -8,30 +8,54 @@ const config = {
 	assetsPath: 'assets',
 	production: false,
 	sourcemaps: true,
-	js: {
-		sourcePath: 'scripts',
-		outputPath: 'js',
-		options: {}
-	},
-	css: {
-		sourcePath: 'sass',
-		outputPath: 'css',
-		options: {
-			includePaths: [
-				'bower_components',
-				'node_modules'
-			],
-			autoprefixer: {
-				browsers: ['> 1%'],
-				cascade: false
-			}
+	watch: false
+};
+
+config.js = {
+	sourcePath: 'scripts',
+	outputPath: 'js',
+	search: '**/*.js',
+	options: {},
+	webpack: {
+		devtool: 'eval-cheap-module-source-map',
+		module: {
+			loaders: [
+				{
+					test: /\.js$/,
+					loader: 'buble',
+					exclude: /node_modules/
+				}
+			]
+		},
+		watchOptions: {
+			poll: true,
+			aggregateTimeout: 500,
+			ignored: /node_modules/
 		}
-	},
-	img: {
-		sourcePath: 'images',
-		outputPath: 'img',
-		options: {}
 	}
+};
+
+config.css = {
+	sourcePath: 'sass',
+	outputPath: 'css',
+	search: '**/*.+(sass|scss)',
+	options: {
+		outputStyle: config.production ? 'compressed' : 'expanded',
+		includePaths: [
+			'bower_components',
+			'node_modules'
+		],
+		autoprefixer: {
+			browsers: ['> 1%'],
+			cascade: false
+		}
+	}
+};
+
+config.img = {
+	sourcePath: 'images',
+	outputPath: 'img',
+	options: {}
 };
 
 function setSource(name) {
@@ -42,18 +66,30 @@ function setOutput(name) {
 	return path.join(config.publicPath, config.assetsPath, name);
 }
 
-// set js
-dotProp.set(config, 'js.sourcePath', setSource(config.js.sourcePath));
-dotProp.set(config, 'js.outputPath', setOutput(config.js.outputPath));
+config.set = (key, val) => {
+	if (typeof key !== 'string' && typeof key !== 'object') {
+		throw new TypeError(`Expected \`key\` to be of type \`string\` or \`object\`, got ${typeof key}`);
+	}
 
-// set css
-dotProp.set(config, 'css.sourcePath', setSource(config.css.sourcePath));
-dotProp.set(config, 'css.outputPath', setOutput(config.css.outputPath));
+	if (typeof key === 'object') {
+		Object.keys(key).forEach(k => {
+			dotProp.set(config, k, key[k]);
+		});
+	} else {
+		dotProp.set(config, key, val);
+	}
+};
 
-// set images
-dotProp.set(config, 'img.sourcePath', setSource(config.img.sourcePath));
-dotProp.set(config, 'img.outputPath', setOutput(config.img.outputPath));
+config.get = input => {
+	if (/\.(sourcePath)$/i.test(input)) {
+		return setSource(dotProp.get(config, input));
+	}
 
-config.get = key => dotProp.get(config, key);
+	if (/\.(outputPath)$/i.test(input)) {
+		return setOutput(dotProp.get(config, input));
+	}
+
+	return dotProp.get(config, input);
+};
 
 module.exports = config;
