@@ -40,11 +40,13 @@ config.css = {
 	outputPath: 'css',
 	search: '**/*.+(sass|scss)',
 	options: {
-		outputStyle: config.production ? 'compressed' : 'expanded',
-		includePaths: [
-			'bower_components',
-			'node_modules'
-		],
+		sass: {
+			outputStyle: config.production ? 'compressed' : 'expanded',
+			includePaths: [
+				'bower_components',
+				'node_modules'
+			]
+		},
 		autoprefixer: {
 			browsers: ['> 1%'],
 			cascade: false
