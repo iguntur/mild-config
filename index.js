@@ -1,97 +1,60 @@
 'use strict';
-const path = require('path');
-const dotProp = require('dot-prop');
+const Mild = require('./mild');
 
-const config = {
-	sourcePath: 'resources',
+const config = new Mild();
+
+config.set({
+	watch: false,
+	production: false,
+	basePath: 'resources',
 	publicPath: 'public',
 	assetsPath: 'assets',
-	production: false,
-	sourcemaps: true,
-	watch: false
-};
-
-config.js = {
-	sourcePath: 'scripts',
-	outputPath: 'js',
-	search: '**/*.js',
-	options: {},
-	webpack: {
-		devtool: 'eval-cheap-module-source-map',
-		module: {
-			loaders: [
-				{
-					test: /\.js$/,
-					loader: 'buble',
-					exclude: /node_modules/
-				}
-			]
+	gulp: {
+		src: {
+			js: 'scripts',
+			sass: 'sass',
+			css: 'css'
 		},
-		watchOptions: {
-			poll: true,
-			aggregateTimeout: 500,
-			ignored: /node_modules/
+		dest: {
+			js: 'js',
+			css: 'css'
 		}
-	}
-};
-
-config.css = {
-	sourcePath: 'sass',
-	outputPath: 'css',
-	search: '**/*.+(sass|scss)',
-	options: {
-		sass: {
-			outputStyle: config.production ? 'compressed' : 'expanded',
-			includePaths: [
-				'bower_components',
-				'node_modules'
-			]
+	},
+	plugins: {
+		sourcemaps: {
+			enabled: true,
+			init: {},
+			write: ['.', {}]
+		},
+		webpack: {
+			devtool: 'eval-cheap-module-source-map',
+			module: {
+				loaders: [
+					{
+						test: /\.js$/,
+						loader: 'buble',
+						exclude: /node_modules/
+					}
+				]
+			},
+			watchOptions: {
+				poll: true,
+				aggregateTimeout: 500,
+				ignored: /node_modules/
+			}
 		},
 		autoprefixer: {
 			browsers: ['> 1%'],
 			cascade: false
+		},
+		sass: {
+			outputStyle: 'expanded',
+			includePaths: [
+				'bower_components',
+				'node_modules'
+			]
 		}
 	}
-};
-
-config.img = {
-	sourcePath: 'images',
-	outputPath: 'img',
-	options: {}
-};
-
-function setSource(name) {
-	return path.join(config.sourcePath, config.assetsPath, name);
-}
-
-function setOutput(name) {
-	return path.join(config.publicPath, config.assetsPath, name);
-}
-
-config.set = (key, val) => {
-	if (typeof key !== 'string' && typeof key !== 'object') {
-		throw new TypeError(`Expected \`key\` to be of type \`string\` or \`object\`, got ${typeof key}`);
-	}
-
-	if (typeof key === 'object') {
-		Object.keys(key).forEach(k => {
-			dotProp.set(config, k, key[k]);
-		});
-	} else {
-		dotProp.set(config, key, val);
-	}
-};
-
-config.get = input => {
-	if (/\.(sourcePath)$/i.test(input)) {
-		return setSource(dotProp.get(config, input));
-	}
-
-	if (/\.(outputPath)$/i.test(input)) {
-		return setOutput(dotProp.get(config, input));
-	}
-
-	return dotProp.get(config, input);
-};
+});
 
 module.exports = config;

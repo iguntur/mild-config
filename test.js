@@ -1,42 +1,58 @@
+/* eslint no-eval: "off" */
+/* eslint-env es6 */
+
 import {join} from 'path';
 import test from 'ava';
-import m from './';
 
-test('throw', t => {
-	t.throws(() => m.set());
-	t.throws(() => m.set(function () {}));
-});
+const config = require('./');
 
-test(`config.get('js.sourcePath')`, t => {
-	const jsPath = m.get('js.sourcePath');
-	const expected = join(m.sourcePath, m.assetsPath, m.js.sourcePath);
+function srcJoin(x) {
+	return join(config.get('basePath'), config.get('assetsPath'), x);
+}
 
-	t.is(jsPath, expected);
-	t.true(jsPath === expected);
-});
+function destJoin(x) {
+	return join(config.get('publicPath'), config.get('assetsPath'), x);
+}
 
-test(`config.get('js.outputPath')`, t => {
-	const jsPath = m.get('js.outputPath');
-	const expected = join(m.publicPath, m.assetsPath, m.js.outputPath);
+const fixtures = [
+	{
+		query: `config.src('path/to/*.js');`,
+		expected: srcJoin('path/to/*.js')
+	},
+	{
+		query: `config.src('../path/to/*.js');`,
+		expected: '../path/to/*.js'
+	},
+	{
+		query: `config.src('./path/to/*.js');`,
+		expected: './path/to/*.js'
+	},
+	{
+		query: `config.dest('path/to/js');`,
+		expected: destJoin('path/to/js')
+	},
+	{
+		query: `config.dest('../path/to/js');`,
+		expected: '../path/to/js'
+	},
+	{
+		query: `config.dest('./path/to/js');`,
+		expected: './path/to/js'
+	},
+	{
+		query: `config.join('publicPath', 'assetsPath', 'gulp.src.css')`,
+		expected: join(config.get('publicPath'), config.get('assetsPath'), config.get('gulp.src.css'))
+	},
+	{
+		query: `config.join('basePath', 'gulp.src.js', 'foo.js')`,
+		expected: join(config.get('basePath'), config.get('gulp.src.js'), 'foo.js')
+	}
+];
 
-	t.is(jsPath, expected);
-	t.true(jsPath === expected);
-});
-
-test(`config.get('js.sourcePath') !== config.js.sourcePath`, t => {
-	const jsPath = m.get('js.sourcePath');
-	const originalPath = m.js.sourcePath;
-
-	t.not(jsPath, originalPath);
-	t.true(jsPath !== originalPath);
-	t.false(jsPath === originalPath);
-});
-
-test(`config.get('js.outputPath') !== config.js.outputPath`, t => {
-	const jsPath = m.get('js.outputPath');
-	const originalPath = m.js.outputPath;
-
-	t.not(jsPath, originalPath);
-	t.true(jsPath !== originalPath);
-	t.false(jsPath === originalPath);
+fixtures.forEach(x => {
+	test(`paths: \`${x.query}\` - '${x.expected}'`, t => {
+		const value = eval(x.query);
+		t.is(value, x.expected);
+		t.true(value === x.expected);
+	});
 });
