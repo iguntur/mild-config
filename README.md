@@ -5,9 +5,14 @@
 Make easy and simple to setup __[gulp](https://www.npmjs.com/package/gulp)__ config tasks.
 
 
+### Requirement
+
+- __Node 4+__
+
+
 ## Install
 
-```
+``` bash
 $ npm install --save mild-config
 ```
 
@@ -15,41 +20,117 @@ $ npm install --save mild-config
 ## Usage
 
 ``` js
-const path = require('path');
 const gulp = require('gulp');
+const webpack = require('webpack-stream');
+const sass = require('gulp-sass');
 const config = require('mild-config');
 
-const source = path.join(config.get('js.sourcePath'), 'app.js');
-const output = path.join(config.get('js.outputPath'), 'bundle.js');
-
 gulp.task('script', () => {
-    return gulp.src(source)
-        .pipe(plugin1())
-        .pipe(plugin2())
-        .pipe(gulp.dest(output));
+    return gulp.src(config.src('js/*.js'))
+        .pipe(webpack(config.get('plugins.webpack')))
+        .pipe(gulp.dest(config.dest('js')));
+});
+
+gulp.task('sass', () => {
+    return gulp.src(config.src('sass/**/*.scss'))
+        .pipe(sass(config.get('plugins.sass')))
+        .pipe(gulp.dest(config.dest('css')));
 });
 ```
 
 
 ## API
 
-> See [dot-prop](https://www.npmjs.com/package/dot-prop#api) API
+> Also See [dot-prop](https://www.npmjs.com/package/dot-prop#api) API
 
-### config.set(key, val)
+### Instance
 
-### config.get(path)
+- __config.set(key, value)__
 
-- #### path
+    Set an item.
 
+- __config.set(object)__
+
+    Set multiple items at once.
+
+- __config.get(key)__
+
+    Get an item.
+
+- __config.has(key)__
+
+    Check if an item exists.
+
+- __config.delete(key)__
+
+    Delete an item.
+
+- __config.clear()__
+
+    Delete all items.
+
+- __config.src(path)__
+
+    Return the `path` and include with prefix path `'resources/assets'`, <br>
+    ensure the `path` does not begin with `'/'`, `'./'`, `'../'`.
+
+    __path__ <br>
     Type: `string`
 
-- #### key
+    __Example__
 
-    Type: `string`, `object`
+    ``` js
+    const config = require('mild-config');
 
-- #### val
+    config.src('js/*.js');
+    //=> 'resources/assets/js/*.js'
 
-    Type: `any`
+    config.src('./_assets/js/*.js');
+    //=> './_assets/js/*.js'
+    ```
+
+- __config.dest(folder)__
+
+    Return the `folder` and include with prefix path `'public/assets'`, <br>
+    ensure the `folder` does not begin with `'/'`, `'./'`, `'../'`.
+
+    __folder__ <br>
+    Type: `string`
+
+    Set your folder destination
+
+    __Example__
+
+    ``` js
+    const config = require('mild-config');
+
+    config.dest('css');
+    //=> 'public/assets/css'
+
+    config.dest('./public/css');
+    //=> './public/css'
+    ```
+
+- __config.join([...paths])__
+
+    Returns path using __[path.join](https://nodejs.org/api/path.html#path_path_join_paths)__
+
+    __paths__ <br>
+    Type: `string`
+
+    __Example__
+
+    ``` js
+    const config = require('mild-config');
+
+    config.join('basePath', 'assetsPath', 'gulp.src.js', 'foo.js');
+    //=> 'resources/assets/scripts/foo.js'
+
+    var path = config.join('basePath', 'assetsPath', 'gulp.src.js', 'foo.js');
+
+    config.join('publicPath', 'assetsPath', 'gulp.dest.js');
+    //=> 'public/assets/js'
+    ```
 
 
 ## Related
