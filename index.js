@@ -58,3 +58,4 @@ config.set({
 });
 
 module.exports = config;
+module.exports.Mild = Mild;

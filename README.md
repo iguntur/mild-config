@@ -43,33 +43,46 @@ gulp.task('sass', () => {
 
 > Also See [dot-prop](https://www.npmjs.com/package/dot-prop#api) API
 
-### Instance
+### config.Mild(options)
 
-- __config.set(key, value)__
+Returns a new instance
+
+#### options
+
+Type: `object`
+
+- __default__ <br>
+    Type: `object` <br>
+
+    Default config.
+
+#### Instance
+
+- __.set(key, value)__
 
     Set an item.
 
-- __config.set(object)__
+- __.set(object)__
 
     Set multiple items at once.
 
-- __config.get(key)__
+- __.get(key)__
 
     Get an item.
 
-- __config.has(key)__
+- __.has(key)__
 
     Check if an item exists.
 
-- __config.delete(key)__
+- __.delete(key)__
 
     Delete an item.
 
-- __config.clear()__
+- __.clear()__
 
     Delete all items.
 
-- __config.src(path)__
+- __.src(path)__
 
     Return the `path` and include with prefix path `'resources/assets'`, <br>
     ensure the `path` does not begin with `'/'`, `'./'`, `'../'`.
@@ -96,7 +109,7 @@ gulp.task('sass', () => {
     //=> ['resources/assets/js/*.js', '!./node_modules/**']
     ```
 
-- __config.dest(folder)__
+- __.dest(folder)__
 
     Return the `folder` and include with prefix path `'public/assets'`, <br>
     ensure the `folder` does not begin with `'/'`, `'./'`, `'../'`.
@@ -118,7 +131,7 @@ gulp.task('sass', () => {
     //=> './public/css'
     ```
 
-- __config.join([...paths])__
+- __.join([...paths])__
 
     Returns path using __[path.join](https://nodejs.org/api/path.html#path_path_join_paths)__
 
