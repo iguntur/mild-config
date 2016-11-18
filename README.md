@@ -75,7 +75,8 @@ gulp.task('sass', () => {
     ensure the `path` does not begin with `'/'`, `'./'`, `'../'`.
 
     __path__ <br>
-    Type: `string`
+    Type: `string`, `array`
+
 
     __Example__
 
@@ -87,6 +88,12 @@ gulp.task('sass', () => {
 
     config.src('./_assets/js/*.js');
     //=> './_assets/js/*.js'
+
+    config.src(['js/*.js', '!js/vendor/**']);
+    //=> ['resources/assets/js/*.js', '!resources/assets/js/vendor/**']
+
+    config.src(['js/*.js', '!./node_modules/**']);
+    //=> ['resources/assets/js/*.js', '!./node_modules/**']
     ```
 
 - __config.dest(folder)__

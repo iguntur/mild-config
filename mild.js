@@ -55,17 +55,57 @@ class Mild {
 	}
 
 	src(src) {
-		const base = this.join('basePath', 'assetsPath');
-		return this._withPrefix(src) ? src : path.join(base, src);
+		const basePath = this.has('basePath') ? this.get('basePath') : 'resources';
+		const assetsPath = this.has('assetsPath') ? this.get('assetsPath') : 'assets';
+
+		const base = path.join(basePath, assetsPath);
+
+		if (!Array.isArray(src)) {
+			if (this._withPrefix(src)) {
+				return src;
+			}
+
+			return path.join(base, src);
+		}
+
+		return [].concat(src).map(inputPath => {
+			if (this._ignore(inputPath)) {
+				inputPath = inputPath.substr(1);
+
+				if (this._withPrefix(inputPath)) {
+					return `!${path.resolve(inputPath)}`;
+				}
+
+				return path.join(`!${base}`, inputPath);
+			}
+
+			if (this._withPrefix(inputPath)) {
+				return path.resolve(inputPath);
+			}
+
+			return path.join(base, inputPath);
+		});
 	}
 
 	dest(dest) {
-		const base = this.join('publicPath', 'assetsPath');
+		const publicPath = this.has('publicPath') ? this.get('publicPath') : 'public';
+		const assetsPath = this.has('assetsPath') ? this.get('assetsPath') : 'assets';
+
+		const base = path.join(publicPath, assetsPath);
+
 		return this._withPrefix(dest) ? dest : path.join(base, dest);
 	}
 
 	_withPrefix(fp) {
 		if (fp.startsWith('/') || fp.startsWith('./') || fp.startsWith('../')) {
+			return true;
+		}
+
+		return false;
+	}
+
+	_ignore(fp) {
+		if (fp.charAt(0) === '!') {
 			return true;
 		}
 
